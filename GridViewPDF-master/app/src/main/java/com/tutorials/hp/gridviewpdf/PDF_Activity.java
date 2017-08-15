@@ -1,0 +1,53 @@
+package com.tutorials.hp.gridviewpdf;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.ScrollBar;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
+
+import java.io.File;
+
+public class PDF_Activity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pdf);
+
+        //PDFlerimizi görüntülemesi icin
+        PDFView pdfView= (PDFView) findViewById(R.id.pdfView);
+        //PDFte aşağı inmek için
+        ScrollBar scrollBar = (ScrollBar) findViewById(R.id.scrollBar);
+        pdfView.setScrollBar(scrollBar);
+        //PDFte yana gitmek için
+        scrollBar.setHorizontal(false);
+        //SACRIFICE MEMORY FOR QUALITY
+        pdfView.useBestQuality(true);
+
+
+        Intent i=this.getIntent();
+        String path=i.getExtras().getString("PATH");
+
+        //Dosyayı Alma
+        File file=new File(path);
+
+            if(file.canRead())
+            {
+                //Yükleme
+
+                pdfView.fromFile(file).defaultPage(1).onLoad(new OnLoadCompleteListener() {
+                    @Override
+                    public void loadComplete(int nbPages) {
+                        Toast.makeText(PDF_Activity.this, String.valueOf(nbPages), Toast.LENGTH_LONG).show();
+                    }
+                }).load();
+
+            }
+
+
+    }
+}
